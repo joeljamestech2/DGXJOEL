@@ -38,9 +38,7 @@
       height: 30px;
     }
 
-    .material-icons {
-      font-size: 22px;
-    }
+    .material-icons { font-size: 22px; }
 
     .back-arrow {
       color: #ccc;
@@ -67,12 +65,9 @@
       justify-content: center;
       margin-left: 8px;
       cursor: pointer;
-      touch-action: manipulation;
     }
 
-    .icon-button:hover {
-      background-color: #333;
-    }
+    .icon-button:hover { background-color: #333; }
 
     .results {
       margin-top: 1.5rem;
@@ -87,7 +82,6 @@
       padding: 0.5rem;
       text-align: left;
       font-size: 0.85rem;
-      position: relative;
     }
 
     .card img {
@@ -115,7 +109,6 @@
       font-size: 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      touch-action: manipulation;
     }
 
     .error {
@@ -129,136 +122,114 @@
       color: #00d9ff;
       margin-top: 5px;
     }
-
-    .video-player {
-      margin-top: 10px;
-    }
-
-    .video-player video {
-      width: 100%;
-      border-radius: 16px;
-      outline: none;
-      background: #000;
-      box-shadow: 0 0 10px rgba(0,0,0,0.6);
-    }
   </style>
 </head>
 <body>
 
-  <h1>JOEL XMD YT DOWNLOADER</h1>
+<h1>JOEL XMD YT DOWNLOADER</h1>
 
-  <div class="search-container">
-    <span class="material-icons back-arrow" onclick="window.location.href='https://joel-xmd-downloader.vercel.app/youtube'">arrow_back</span>
-    <input class="search-input" id="query" placeholder="Enter search term or YouTube url" />
-    <div class="icon-button" onclick="searchVideos()" title="Search">
-      <span class="material-icons">search</span>
-    </div>
-    <div class="icon-button" onclick="searchVideos()" title="Voice (not active)">
-      <span class="material-icons">mic</span>
-    </div>
+<div class="search-container">
+  <span class="material-icons back-arrow" onclick="window.location.href='https://joel-xmd-downloader.vercel.app/youtube'">arrow_back</span>
+  <input class="search-input" id="query" placeholder="Enter search term or YouTube url" />
+  <div class="icon-button" onclick="searchVideos()">
+    <span class="material-icons">search</span>
   </div>
+  <div class="icon-button">
+    <span class="material-icons">mic</span>
+  </div>
+</div>
 
-  <div class="error" id="error"></div>
-  <div class="results" id="results"></div>
+<div class="error" id="error"></div>
+<div class="results" id="results"></div>
 
-  <script>
-    const input = document.getElementById("query");
-    const results = document.getElementById("results");
-    const error = document.getElementById("error");
+<script>
+const input = document.getElementById("query");
+const results = document.getElementById("results");
+const error = document.getElementById("error");
 
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter") searchVideos();
+// 🔥 AUTO SEARCH ON PAGE LOAD
+window.addEventListener("load", () => {
+  input.value = "trending musics";
+  searchVideos();
+});
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") searchVideos();
+});
+
+async function searchVideos() {
+  const query = input.value.trim();
+  results.innerHTML = '';
+  error.textContent = '';
+
+  if (!query) return;
+
+  const loading = document.createElement("div");
+  loading.className = "loading";
+  loading.textContent = "Searching trending musics...";
+  results.appendChild(loading);
+
+  try {
+    const api = `https://corsproxy.io/?${encodeURIComponent(
+      `https://my-rest-apis-six.vercel.app/yts?query=${encodeURIComponent(query)}`
+    )}`;
+
+    const res = await fetch(api);
+    const json = await res.json();
+    results.innerHTML = '';
+
+    if (!json.results || json.results.length === 0) {
+      error.textContent = "❌ No results found.";
+      return;
+    }
+
+    // ✅ EXACTLY 20 RESULTS
+    json.results.slice(0, 20).forEach(video => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${video.thumbnail}">
+        <div class="meta">
+          <p><strong>${video.title}</strong></p>
+          <p>${video.author}</p>
+          <p>${video.duration}</p>
+        </div>
+        <div class="actions">
+          <button onclick="downloadMedia('${video.url}','mp3',this)">download audio</button>
+          <button onclick="downloadMedia('${video.url}','mp4',this)">download video</button>
+        </div>
+      `;
+      results.appendChild(card);
     });
 
-    async function searchVideos() {
-      const query = input.value.trim();
-      results.innerHTML = '';
-      error.textContent = '';
+  } catch {
+    error.textContent = "❌ Failed to fetch videos.";
+  }
+}
 
-      if (!query) {
-        error.textContent = "❌ Enter search term or YouTube URL.";
-        return;
-      }
+async function downloadMedia(url, format, button) {
+  button.disabled = true;
 
-      const loading = document.createElement("div");
-      loading.className = "loading";
-      loading.textContent = "Searching videos...";
-      results.appendChild(loading);
+  try {
+    const api = `https://corsproxy.io/?${encodeURIComponent(
+      `https://iamtkm.vercel.app/downloaders/yt${format}?apikey=tkm&url=${encodeURIComponent(url)}`
+    )}`;
 
-      try {
-        const api = `https://corsproxy.io/?${encodeURIComponent(
-          `https://my-rest-apis-six.vercel.app/yts?query=${encodeURIComponent(query)}`
-        )}`;
+    const res = await fetch(api);
+    const json = await res.json();
 
-        const res = await fetch(api);
-        const json = await res.json();
-        results.innerHTML = '';
-
-        if (!json.results || json.results.length === 0) {
-          error.textContent = "❌ No results found.";
-          return;
-        }
-
-        json.results.slice(0, 20).forEach(video => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <img src="${video.thumbnail}" alt="${video.title}">
-            <div class="meta">
-              <p><strong>${video.title}</strong></p>
-              <p>${video.author}</p>
-              <p>${video.duration}</p>
-            </div>
-            <div class="actions">
-              <button onclick="downloadMedia('${video.url}', 'mp3', this)">download audio</button>
-              <button onclick="downloadMedia('${video.url}', 'mp4', this)">download video</button>
-            </div>
-            <div class="video-player"></div>
-          `;
-          results.appendChild(card);
-        });
-
-      } catch (err) {
-        console.error(err);
-        error.textContent = "❌ Failed to fetch videos.";
-      }
+    if (json?.status && json?.data?.url) {
+      window.location.href = json.data.url;
+    } else {
+      alert("❌ Download failed");
     }
-
-    async function downloadMedia(url, format, button) {
-      const card = button.closest('.card');
-
-      const old = card.querySelector('.loading');
-      if (old) old.remove();
-
-      const loading = document.createElement("div");
-      loading.className = "loading";
-      loading.textContent = "Preparing download...";
-      card.appendChild(loading);
-
-      button.disabled = true;
-
-      try {
-        const apiURL = `https://corsproxy.io/?${encodeURIComponent(
-          `https://iamtkm.vercel.app/downloaders/yt${format}?apikey=tkm&url=${encodeURIComponent(url)}`
-        )}`;
-
-        const res = await fetch(apiURL);
-        const json = await res.json();
-
-        if (json?.status && json?.data?.url) {
-          window.location.href = json.data.url;
-        } else {
-          alert("❌ Failed to get download link");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("❌ Download failed");
-      } finally {
-        loading.remove();
-        button.disabled = false;
-      }
-    }
-  </script>
+  } catch {
+    alert("❌ Error downloading");
+  } finally {
+    button.disabled = false;
+  }
+}
+</script>
 
 </body>
 </html>
