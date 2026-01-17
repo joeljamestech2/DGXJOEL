@@ -10,7 +10,7 @@ app.use("/scripts", express.static(path.join(__dirname, "scripts")));
 app.use("/icons", express.static(path.join(__dirname, "icons")));
 
 // Serve index.html
-app.get("/joel-xmd-youtube-media-downloader", (req, res) => {
+app.get("/youtube", (req, res) => {
   res.sendFile(path.join(__dirname, "src/index.html"));
 });
 
