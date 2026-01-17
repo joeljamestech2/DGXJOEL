@@ -11,7 +11,7 @@ app.use("/icons", express.static(path.join(__dirname, "icons")));
 
 // Serve index.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "src/index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
