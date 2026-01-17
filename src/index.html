@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> @..joel-xmd-yt-dl-all...&</title>
+  <title>JOEL XMD YT Downloader</title>
 
   <!-- Favicon / Icon -->
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/joeljamestech2/JOEL-XMD/refs/heads/main/mydata/media/joelXtec.jpg" />
@@ -107,6 +107,7 @@
       color: #ccc;
     }
 
+    /* 🔹 Cylindrical Download Buttons */
     .actions {
       margin-top: 0.5rem;
       display: flex;
@@ -117,11 +118,21 @@
     .actions button {
       background: #00d9ff;
       color: #000;
-      padding: 0.3rem 0.6rem;
+      padding: 0.5rem 1.2rem;
       font-weight: bold;
-      font-size: 0.75rem;
-      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      border: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s;
+    }
+
+    .actions button:hover {
+      background: #00b3d6;
     }
 
     .error {
@@ -208,8 +219,12 @@ async function searchVideos() {
           <p>${video.duration}</p>
         </div>
         <div class="actions">
-          <button onclick="downloadMedia('${video.url}','mp3',this)">download audio</button>
-          <button onclick="downloadMedia('${video.url}','mp4',this)">download video</button>
+          <button onclick="downloadMedia('${video.url}','mp3',this)">
+            <i class="fa fa-music"></i> Audio
+          </button>
+          <button onclick="downloadMedia('${video.url}','mp4',this)">
+            <i class="fa fa-video"></i> Video
+          </button>
         </div>
       `;
       results.appendChild(card);
