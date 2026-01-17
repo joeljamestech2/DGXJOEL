@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JOEL XMD YT Downloader</title>
+  <title>@...joel xmd yt dl...&</title>
 
   <!-- Favicon / Icon -->
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/joeljamestech2/JOEL-XMD/refs/heads/main/mydata/media/joelXtec.jpg" />
@@ -48,15 +48,14 @@
       padding: 8px 12px;
       max-width: 600px;
       margin: 0 auto;
-      height: 30px;
+      height: 40px;
     }
-
-    .material-icons { font-size: 22px; }
 
     .back-arrow {
       color: #ccc;
       cursor: pointer;
       margin-right: 10px;
+      font-size: 20px;
     }
 
     .search-input {
@@ -78,9 +77,15 @@
       justify-content: center;
       margin-left: 8px;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
     .icon-button:hover { background-color: #333; }
+
+    .icon-button i {
+      font-size: 20px;
+      color: #fff;
+    }
 
     .results {
       margin-top: 1.5rem;
@@ -107,7 +112,7 @@
       color: #ccc;
     }
 
-    /* 🔹 Cylindrical Download Buttons */
+    /* Cylindrical Download Buttons */
     .actions {
       margin-top: 0.5rem;
       display: flex;
@@ -153,13 +158,13 @@
 <h1>JOEL XMD YT DOWNLOADER</h1>
 
 <div class="search-container">
-  <span class="material-icons back-arrow" onclick="window.location.href='#'">arrow_back</span>
-  <input class="search-input" id="query" placeholder="Enter search term or YouTube url" />
+  <i class="fas fa-arrow-left back-arrow" onclick="window.location.href='https://joel-xmd-downloader-xi.vercel.app/#'"></i>
+  <input class="search-input" id="query" placeholder="Enter search term or YouTube URL" />
   <div class="icon-button" onclick="searchVideos()">
-    <span class="material-icons">search</span>
+    <i class="fas fa-search"></i>
   </div>
-  <div class="icon-button" onclick="searchVideos()">
-    <span class="material-icons">mic</span>
+  <div class="icon-button" onclick="startVoiceSearch()">
+    <i class="fas fa-microphone"></i>
   </div>
 </div>
 
@@ -181,6 +186,7 @@ input.addEventListener("keydown", e => {
   if (e.key === "Enter") searchVideos();
 });
 
+// Search YouTube API
 async function searchVideos() {
   const query = input.value.trim();
   results.innerHTML = '';
@@ -207,7 +213,6 @@ async function searchVideos() {
       return;
     }
 
-    // ✅ EXACTLY 20 RESULTS
     json.results.slice(0, 20).forEach(video => {
       const card = document.createElement("div");
       card.className = "card";
@@ -220,10 +225,10 @@ async function searchVideos() {
         </div>
         <div class="actions">
           <button onclick="downloadMedia('${video.url}','mp3',this)">
-            <i class="fa fa-music"></i> Audio
+            <i class="fas fa-music"></i> Audio
           </button>
           <button onclick="downloadMedia('${video.url}','mp4',this)">
-            <i class="fa fa-video"></i> Video
+            <i class="fas fa-video"></i> Video
           </button>
         </div>
       `;
@@ -235,6 +240,7 @@ async function searchVideos() {
   }
 }
 
+// Download audio/video
 async function downloadMedia(url, format, button) {
   button.disabled = true;
 
@@ -256,6 +262,33 @@ async function downloadMedia(url, format, button) {
   } finally {
     button.disabled = false;
   }
+}
+
+// 🔊 Voice search using Web Speech API
+function startVoiceSearch() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    alert("❌ Your browser does not support voice recognition.");
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    input.value = transcript;
+    searchVideos();
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Voice recognition error:", event.error);
+    alert("❌ Voice recognition failed.");
+  };
 }
 </script>
 
