@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <title>JOEL XMD YT Downloader</title>
+
   <link rel="icon" href="https://raw.githubusercontent.com/joeljamestech2/JOEL-XMD-DOWNLOADER-/refs/heads/main/IMAGES/images%20(1).png" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
   <style>
     body {
       margin: 0;
@@ -180,21 +182,24 @@
 
       const loading = document.createElement("div");
       loading.className = "loading";
-      loading.textContent = "Processing...";
+      loading.textContent = "Searching videos...";
       results.appendChild(loading);
 
       try {
-        const api = `https://corsproxy.io/?${encodeURIComponent(`https://my-rest-apis-six.vercel.app/yts?query=${encodeURIComponent(query)}`)}`;
+        const api = `https://corsproxy.io/?${encodeURIComponent(
+          `https://my-rest-apis-six.vercel.app/yts?query=${encodeURIComponent(query)}`
+        )}`;
+
         const res = await fetch(api);
         const json = await res.json();
         results.innerHTML = '';
 
-        if (!json.results || !json.results.length) {
+        if (!json.results || json.results.length === 0) {
           error.textContent = "❌ No results found.";
           return;
         }
 
-        json.results.forEach(video => {
+        json.results.slice(0, 20).forEach(video => {
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
@@ -212,37 +217,48 @@
           `;
           results.appendChild(card);
         });
+
       } catch (err) {
-        console.error("Error fetching videos:", err);
+        console.error(err);
         error.textContent = "❌ Failed to fetch videos.";
       }
     }
 
     async function downloadMedia(url, format, button) {
       const card = button.closest('.card');
+
+      const old = card.querySelector('.loading');
+      if (old) old.remove();
+
       const loading = document.createElement("div");
       loading.className = "loading";
       loading.textContent = "Preparing download...";
       card.appendChild(loading);
+
       button.disabled = true;
 
       try {
-        const apiURL = `https://corsproxy.io/?${encodeURIComponent(`https://iamtkm.vercel.app/downloaders/yt${format}?url=${encodeURIComponent(url)}`)}`;
+        const apiURL = `https://corsproxy.io/?${encodeURIComponent(
+          `https://iamtkm.vercel.app/downloaders/yt${format}?apikey=tkm&url=${encodeURIComponent(url)}`
+        )}`;
+
         const res = await fetch(apiURL);
         const json = await res.json();
-        if (json?.data?.url) {
+
+        if (json?.status && json?.data?.url) {
           window.location.href = json.data.url;
         } else {
-          alert("Failed to get download link.");
+          alert("❌ Failed to get download link");
         }
       } catch (err) {
-        console.error("Download failed:", err);
-        alert("Download failed.");
+        console.error(err);
+        alert("❌ Download failed");
       } finally {
         loading.remove();
         button.disabled = false;
       }
     }
   </script>
+
 </body>
 </html>
