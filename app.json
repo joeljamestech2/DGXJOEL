@@ -1,0 +1,9 @@
+{
+  "name": "JOEL-XMD-YT",
+  "description": "A trending YouTube downloader web app with MP3/MP4 download support",
+  "repository": "https://github.com/yourusername/joel-xmd-downloader",
+  "stack": "nodejs",
+  "env": [
+    { "name": "API_KEY", "value": "YOUR_API_KEY_HERE" }
+  ]
+}
