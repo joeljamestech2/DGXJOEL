@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YouTube Downloader | Joel XMD</title>
+
+<style>
+    body {
+        background: #0b0b0c;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: white;
+    }
+
+    header {
+        padding: 20px;
+        text-align: center;
+        background: #111;
+        font-size: 28px;
+        font-weight: bold;
+        border-bottom: 2px solid #e91e63;
+    }
+
+    .search-box {
+        width: 90%;
+        max-width: 900px;
+        margin: auto;
+        margin-top: 25px;
+        display: flex;
+        gap: 10px;
+    }
+
+    input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 7px;
+        border: none;
+        outline: none;
+        font-size: 17px;
+    }
+
+    button {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 7px;
+        background: #e91e63;
+        color: white;
+        font-size: 17px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #c2185b;
+    }
+
+    .card {
+        width: 90%;
+        max-width: 900px;
+        margin: auto;
+        background: #161616;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+        border-left: 5px solid #e91e63;
+        display: flex;
+        gap: 15px;
+        position: relative;
+    }
+
+    .triangle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-top: 60px solid #e91e63;
+        border-left: 60px solid transparent;
+        border-radius: 0 12px 0 0;
+    }
+
+    .card img {
+        width: 180px;
+        height: 110px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .info {
+        flex: 1;
+    }
+
+    .title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .btns a {
+        background: #e91e63;
+        padding: 8px 12px;
+        border-radius: 7px;
+        margin-right: 10px;
+        text-decoration: none;
+        color: white;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .btns a:hover {
+        background: #c2185b;
+    }
+</style>
+
+</head>
+<body>
+
+<header>YouTube Downloader – Joel XMD</header>
+
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search YouTube videos…" />
+    <button onclick="searchYT()">Search</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+async function searchYT() {
+    let query = document.getElementById("searchInput").value;
+    if (!query) return alert("Enter a search keyword!");
+
+    let box = document.getElementById("result");
+    box.innerHTML = "<p style='text-align:center;'>Searching…</p>";
+
+    try {
+        let res = await fetch(`https://yt-api.paxsenix.biz.id/search?query=${query}`);
+        let data = await res.json();
+
+        box.innerHTML = "";
+        let items = data.data.slice(0, 10);
+
+        items.forEach(item => {
+            let vid = item.videoId;
+            let title = item.title;
+            let thumb = item.thumbnail[0].url;
+
+            box.innerHTML += `
+                <div class="card">
+                    <div class="triangle"></div>
+                    <img src="${thumb}">
+                    <div class="info">
+                        <div class="title">${title}</div>
+                        <div class="btns">
+                            <a href="https://iamtkm.vercel.app/downloaders/ytmp3?url=https://youtube.com/watch?v=${vid}">
+                                Download MP3
+                            </a>
+                            <a href="https://iamtkm.vercel.app/downloaders/ytmp4?url=https://youtube.com/watch?v=${vid}">
+                                Download MP4
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+    } catch (e) {
+        box.innerHTML = "<p style='text-align:center;color:red;'>Error loading results.</p>";
+    }
+}
+</script>
+
+</body>
+  </html>
